@@ -1,5 +1,6 @@
 from settings import *
 from support import *
+from menus import *
 from timer import *
 from monster import *
 
@@ -20,13 +21,12 @@ class Game:
         enemy_monsterlist = ["Behemoth","Cerberus","Crow","Garuda","Ghost","Helm","Keltos","Kraken","Reaper","Wolvem"]
         self.player_monsters = [Monster(name,self.player_monsterimages[name]) for name in player_monsterlist]
         self.enemy_monsters = [Enemy(name,self.enemy_monsterimages[name]) for name in enemy_monsterlist]
-        self.monster = self.player_monsters[random.randint(0,9)]
-        self.sprites.add(self.monster)
-        self.enemy_name = enemy_monsterlist[random.randint(0,9)]
-        self.enemy = Enemy(self.enemy_name, self.enemy_monsterimages[self.enemy_name])
-        self.sprites.add(self.enemy)
+        self.monster_sprite = self.player_monsters[random.randint(0,10)]
+        self.sprites.add(self.monster_sprite)
+        self.enemy_sprite = self.enemy_monsters[random.randint(0,9)]
+        self.sprites.add(self.enemy_sprite)
 
-
+        self.ui = UI(self.monster_sprite,self.player_monsters)
 
     def import_assets(self):
         self.player_monsterimages = folder_import("player")
@@ -45,9 +45,11 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.run = False
             self.sprites.update(dt)
+            self.ui.update()
             self.display_surface.blit(self.backgrounds["2"], (0,0))
             self.draw_floor()
             self.sprites.draw(self.display_surface)
+            self.ui.draw()
             pygame.display.update()
         
         pygame.quit()
