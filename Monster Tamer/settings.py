@@ -4,6 +4,7 @@ import timer
 from os.path import join
 from os import walk
 
+
 colors = {
 "black": "#000000",
 "white": "#ffffff",
@@ -42,10 +43,13 @@ monster_data = {
     
 }
 
+
+
+
 ability_data = {
     "scratch": {"damage": random.randint(7,19), "element":"normal", "animation": "scratch"},
     "slash": {"damage": random.randint(10,25), "element":"normal", "animation": "slash"},
-    "fireball": {"damage": random.randint(7,19), "element":"fire", "animation": "fire"},
+    "ember": {"damage": random.randint(7,19), "element":"fire", "animation": "fire"},
     'splash':  {'damage': random.randint(7,19),  'element': 'water',  'animation': 'splash'},
     'explosion': {'damage': random.randint(10,25),  'element': 'fire',   'animation': 'explosion'},
     "ice shard": {"damage": random.randint(10,25), "element":"water", "animation": "ice"},

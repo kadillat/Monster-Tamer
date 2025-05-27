@@ -10,7 +10,7 @@ class Creature:
 
 
 class Monster(pygame.sprite.Sprite,Creature):
-    def __init__(self, name, surf):
+    def __init__(self, name, surf,groups):
         super().__init__()
         self.image = surf
         self.rect = self.image.get_frect(bottomleft = (180,640))
@@ -19,7 +19,7 @@ class Monster(pygame.sprite.Sprite,Creature):
     
 
 class Enemy(pygame.sprite.Sprite,Creature):
-    def __init__(self, name, surf,):
+    def __init__(self, name, surf,groups):
         super().__init__()
         self.image = surf
         self.rect = self.image.get_frect(midbottom = (1000,300))
