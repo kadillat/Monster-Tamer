@@ -4,9 +4,17 @@ import random
 class Creature:
     def get_data(self,name):
         self.element = monster_data[name]["element"]
-        self.health = self.maxhealth = monster_data[name]["health"]
+        self._health = self.maxhealth = monster_data[name]["health"]
         self.abilities = random.sample(list(ability_data.keys()),4)
         self.name = name
+
+    @property
+    def health(self):
+        return self._health
+    
+    @health.setter
+    def health(self,value):
+        self._health = min(self.maxhealth,max(0,value))
 
 
 class Monster(pygame.sprite.Sprite,Creature):

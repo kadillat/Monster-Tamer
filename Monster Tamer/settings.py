@@ -28,7 +28,7 @@ monster_data = {
     "Kamai":  {"element": "normal", "health": 100},
     "Lorri":  {"element": "normal", "health": 65},
     "Pla":  {"element": "dark", "health": 50},
-    "Slyph":  {"element": "ground", "health": 80},
+    "Slyph":  {"element": "earth", "health": 80},
     "Windy":  {"element": "wind", "health": 60},
     "Behemoth":  {"element": "normal", "health": 140},
     "Cerberus":  {"element": "normal", "health": 120},
@@ -53,18 +53,19 @@ ability_data = {
     'splash':  {'damage': random.randint(7,19),  'element': 'water',  'animation': 'splash'},
     'explosion': {'damage': random.randint(10,25),  'element': 'fire',   'animation': 'explosion'},
     "ice shard": {"damage": random.randint(10,25), "element":"water", "animation": "ice"},
-    "darkness": {"damage": random.randint(11,29), "element":"dark", "animation": "dark"}
+    "darkness": {"damage": random.randint(11,29), "element":"dark", "animation": "dark"},
+    "earthquake": {"damage": random.randint(11,29), "element":"earth", "animation": "earth"}
 
 
 }
 
 element_data = {
-    "fire": {"water": 0.5, "normal": 1, "dark": 1, "fire": 0.5, "wind": 1, "ground": 1},
-    "water": {"water": 0.5, "normal": 1, "dark": 1, "fire": 1.5, "wind": 1, "ground": 1},
-    "dark": {"water": 1, "normal": 1.5, "dark": 1, "fire": 1, "wind": 1, "ground": 1},
-    "normal": {"water": 1, "normal": 1, "dark": 1, "fire": 1, "wind": 1, "ground": 1},
-    "wind": {"water": 1, "normal": 1, "dark": 1.5, "fire": 1, "wind": 0.5, "ground": 0.5},
-    "ground": {"water": 0.5, "normal": 1, "dark": 1, "fire": 1, "wind": 1.5, "ground": 1}
+    "fire": {"water": 0.5, "normal": 1, "dark": 1, "fire": 0.5, "wind": 1, "earth": 1},
+    "water": {"water": 0.5, "normal": 1, "dark": 1, "fire": 1.5, "wind": 1, "earth": 1},
+    "dark": {"water": 1, "normal": 1.5, "dark": 1, "fire": 1, "wind": 1, "earth": 1},
+    "normal": {"water": 1, "normal": 1, "dark": 1, "fire": 1, "wind": 1, "earth": 1},
+    "wind": {"water": 1, "normal": 1, "dark": 1.5, "fire": 1, "wind": 0.5, "earth": 0.5},
+    "earth": {"water": 0.5, "normal": 1, "dark": 1, "fire": 1, "wind": 1.5, "earth": 1}
     
 
 

@@ -3,6 +3,7 @@ from support import *
 from menus import *
 from timer import *
 from monster import *
+from animation import *
 
 
 class Game:
@@ -14,7 +15,9 @@ class Game:
         self.clock = pygame.time.Clock()
         self.sprites = pygame.sprite.Group()
         self.import_assets()
+        self.audio["music"].play(-1)
         self.player_active = True
+        self.enemy_counter = 0
 
 
 
@@ -33,6 +36,7 @@ class Game:
         self.sprites.add(self.player)
         self.sprites.add(self.enemy)
 
+
         self.ui = UI(self.player, self.player_monsters, self.get_input)
         self.enemy_ui = EnemyUI(self.enemy)
 
@@ -44,7 +48,20 @@ class Game:
     def get_input(self,state,data = None):
         if state == "attack":
             self.apply_attack(self.enemy,data)
-        
+
+        elif state == "rest":
+            print(self.player.health)
+            self.player.health += random.randint(15,30)
+            print(self.player.health)
+            AttackAnimation(self.player,self.attack_frames["heal"],self.sprites)
+            self.audio["heal"].play()
+
+        elif state == "switch":
+            self.player.kill()
+            self.player = data
+            self.sprites.add(self.player)
+            self.ui.monster = self.player
+
         self.player_active = False
         self.timers["player end"].activate()
 
@@ -55,6 +72,8 @@ class Game:
         target_element = target.element
         attack_element = attack_data["element"]
         attack_multiply = element_data[attack_element][target_element]
+        AttackAnimation(target,self.attack_frames[attack_data["animation"]],self.sprites)
+        self.audio[attack_data["animation"]].play()
         print(attack)
         print(base_damage * attack_multiply)
         
@@ -63,12 +82,35 @@ class Game:
 
 
     def enemy_turn(self):
-        attack = random.choice(self.enemy.abilities)
-        self.apply_attack(self.player,attack)
-        self.timers["enemy end"].activate()
+        if self.enemy.health <= 0:
+            self.player_active = True
+            self.enemy.kill()
+            self.enemy_number = int(random.randint(0,9))
+            self.enemy = self.enemy_monsters[self.enemy_number]
+            self.enemy_ui.monster = self.enemy
+            self.sprites.add(self.enemy)
+            self.enemy_counter += 1
+            if self.enemy_counter == 3:
+                pygame.quit()
 
-    def player_turn(self):    
+
+
+        else:
+            attack = random.choice(self.enemy.abilities)
+            self.apply_attack(self.player,attack)
+            self.timers["enemy end"].activate()
+
+    def player_turn(self):
         self.player_active = True
+        if self.player.health <= 0:
+            available_monsters = [monster for monster in self.player_monsters if monster.health > 0]
+            if available_monsters:
+                self.player.kill()
+                self.player = available_monsters[0]
+                self.sprites.add(self.player)
+                self.ui.monster = self.player
+            else:
+                self.run = False
 
 
     def update_timers(self):
@@ -79,6 +121,8 @@ class Game:
         self.player_monsterimages = folder_import("player")
         self.backgrounds = folder_import("otherimg")
         self.enemy_monsterimages = folder_import("enemies")
+        self.attack_frames = tile_importer(4,"attacks")
+        self.audio = audio_import("audio")
 
     def draw_floor(self):
         for sprite in self.sprites:
