@@ -4,6 +4,7 @@ from menus import *
 from timer import *
 from monster import *
 from animation import *
+from moviepy.editor import VideoFileClip 
 
 
 class Game:
@@ -14,36 +15,73 @@ class Game:
         self.run = True
         self.clock = pygame.time.Clock()
         self.sprites = pygame.sprite.Group()
+        self.state = "selection"
+        self.selected_monsters = [] 
+
         self.import_assets()
         self.audio["music"].play(-1)
         self.player_active = True
         self.enemy_counter = 0
+        self.selection_index = 0
 
 
 
-        player_monsterlist = ["Batty","Flare","Groudon","Hornet","Hydro","Jelly","Kamai","Lorri","Pla","Slyph","Windy"]
+        player_monsterlist = ["Batty","Flare","Groudon","Hornet","Hydro","Jelly","Kamai","Lorri","Pla","Slyph","Windy","Pav"]
         enemy_monsterlist = ["Behemoth","Cerberus","Crow","Garuda","Ghost","Helm","Keltos","Kraken","Reaper","Wolvem"]
         self.player_monsters = [Monster(name, self.player_monsterimages[name], self.sprites) for name in player_monsterlist]
         self.enemy_monsters = [Enemy(name,self.enemy_monsterimages[name],self.sprites) for name in enemy_monsterlist]
         self.player_number = int(random.randint(0,9))
         self.player_name = player_monsterlist[self.player_number]
-        self.player = self.player_monsters[self.player_number]
+        # self.player = self.player_monsters[self.player_number]
         self.player_sprite = self.player_monsters[self.player_number]
         self.enemy_number = int(random.randint(0,9))
         self.enemy_sprite = self.enemy_monsters[self.enemy_number]
         self.enemy_name = enemy_monsterlist[self.enemy_number] 
         self.enemy = self.enemy_monsters[self.enemy_number]
-        self.sprites.add(self.player)
+        # self.sprites.add(self.player)
         self.sprites.add(self.enemy)
 
 
-        self.ui = UI(self.player, self.player_monsters, self.get_input)
         self.enemy_ui = EnemyUI(self.enemy)
 
         self.timers = {
             "player end": Timer(1000, func = self.enemy_turn),
             "enemy end": Timer(1000,func=self.player_turn)
             }
+        
+            
+    def draw_selection_screen(self):
+        self.display_surface.fill("white")
+        font = pygame.font.Font(None, 36)
+        title_surf = font.render("Choose 6 Monsters", True, "black")
+        title_rect = title_surf.get_rect(center=(1280 // 2, 80))
+        self.display_surface.blit(title_surf, title_rect)
+
+        spacing_x = 200
+        spacing_y = 100
+        start_x = (1280 - (spacing_x * 4)) // 2  # 240
+        start_y = (720 - (spacing_y * 3)) // 2   # 210
+
+        for i, monster in enumerate(self.player_monsters):
+            col = i % 4
+            row = i // 4
+            x = start_x + col * spacing_x
+            y = start_y + row * spacing_y
+
+            rect = pygame.Rect(x, y, 150, 60)
+
+            if monster in self.selected_monsters:
+                border_color = "green"
+            elif i == self.selection_index:
+                border_color = "red"
+            else:
+                border_color = "black"
+
+            pygame.draw.rect(self.display_surface, border_color, rect, 3)
+
+            name_surf = font.render(monster.name, True, "black")
+            self.display_surface.blit(name_surf, (x + 10, y + 20))
+
 
     def get_input(self,state,data = None):
         if state == "attack":
@@ -51,13 +89,17 @@ class Game:
 
         elif state == "rest":
             print(self.player.health)
-            self.player.health += random.randint(15,30)
+            heal_amount = random.randint(15,30)
+            self.player.health += heal_amount
             print(self.player.health)
             AttackAnimation(self.player,self.attack_frames["heal"],self.sprites)
             self.audio["heal"].play()
+            self.ui.message = f"{self.player.name} rested, it gained {heal_amount} health!"
+            self.ui.message_timer.activate()
 
         elif state == "switch":
             self.player.kill()
+            self.audio["switch"].play()
             self.player = data
             self.sprites.add(self.player)
             self.ui.monster = self.player
@@ -76,9 +118,17 @@ class Game:
         self.audio[attack_data["animation"]].play()
         print(attack)
         print(base_damage * attack_multiply)
-        
-        target.health -= base_damage * attack_multiply
+        damage = base_damage * attack_multiply
+        target.health -= damage
         print(target.health,"/",target.maxhealth)
+
+        if isinstance(target, Enemy):
+            actor_name = self.player.name
+        else:
+            actor_name = self.enemy.name
+        attack_text = f"{actor_name} {attack} kullandı, {int(damage)} hasar verdi!"
+        self.ui.message = attack_text
+        self.ui.message_timer.activate()
 
 
     def enemy_turn(self):
@@ -103,7 +153,7 @@ class Game:
     def player_turn(self):
         self.player_active = True
         if self.player.health <= 0:
-            available_monsters = [monster for monster in self.player_monsters if monster.health > 0]
+            available_monsters = [monster for monster in self.player_monsters if monster.health >= 1]
             if available_monsters:
                 self.player.kill()
                 self.player = available_monsters[0]
@@ -126,8 +176,49 @@ class Game:
 
     def draw_floor(self):
         for sprite in self.sprites:
-            floor_rect = self.backgrounds["floor"].get_frect(center = sprite.rect.midbottom + pygame.Vector2(0,-10))
-            self.display_surface.blit(self.backgrounds["floor"], floor_rect)
+            if hasattr(sprite, "name"):
+                floor_rect = self.backgrounds["floor"].get_frect(center = sprite.rect.midbottom + pygame.Vector2(0,-10))
+                self.display_surface.blit(self.backgrounds["floor"], floor_rect)
+
+    def handle_selection_input(self):
+
+        keys = pygame.key.get_just_pressed()
+        monster_count = len(self.player_monsters)
+        row_size = 4
+
+        if keys[pygame.K_RIGHT]:
+            self.audio["switch"].play()
+            self.selection_index = (self.selection_index + 1) % monster_count
+        if keys[pygame.K_LEFT]:
+            self.audio["switch"].play()
+            self.selection_index = (self.selection_index - 1) % monster_count
+        if keys[pygame.K_DOWN]:
+            self.audio["switch"].play()
+            self.selection_index = (self.selection_index + row_size) % monster_count
+        if keys[pygame.K_UP]:
+            self.audio["switch"].play()
+            self.selection_index = (self.selection_index - row_size) % monster_count
+
+        if keys[pygame.K_RETURN] or keys[pygame.K_SPACE]:
+            self.audio["switch"].play()
+            monster = self.player_monsters[self.selection_index]
+            if monster not in self.selected_monsters:
+                self.selected_monsters.append(monster)
+                if len(self.selected_monsters) == 6:
+                    self.start_battle()
+
+
+    def start_battle(self):
+        self.player_monsters = self.selected_monsters
+        self.player_number = 0
+        self.player = self.player_monsters[self.player_number]
+        self.sprites.add(self.player)
+
+        self.ui = UI(self.player, self.player_monsters, self.get_input)
+        self.state = "battle"
+
+
+
 
     def start(self):
         while self.run:
@@ -135,21 +226,33 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.run = False
-            self.update_timers()
-            self.sprites.update(dt)
-            if self.player_active:
-                self.ui.update()
-            self.display_surface.blit(self.backgrounds["2"], (0,0))
-            self.draw_floor()
-            self.sprites.draw(self.display_surface)
-            self.ui.draw()
-            self.enemy_ui.draw()
-            pygame.display.update()
-        
 
-        
+            if self.state == "selection":
+                self.handle_selection_input()
+                self.draw_selection_screen()
+
+            elif self.state == "battle":
+                self.update_timers()
+                self.sprites.update(dt)
+                if self.player_active:
+                    self.ui.update()
+
+                self.display_surface.blit(self.backgrounds["2"], (0,0))
+                self.draw_floor()
+                self.sprites.draw(self.display_surface)
+                self.ui.draw()
+                self.enemy_ui.draw()
+
+            pygame.display.update()
+
         pygame.quit()
 
+def play_intro(video_path): 
+    clip = VideoFileClip(video_path) 
+    pygame.display.set_caption("Monster Tamer")
+    clip.preview()
+
 if __name__ == "__main__":
+    play_intro("intro/intro.mp4")
     game = Game()
     game.start()

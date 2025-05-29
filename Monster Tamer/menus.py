@@ -1,4 +1,7 @@
 from settings import *
+from timer import *
+from support import *
+
 
 class UI:
     def __init__(self, monster,player_monsters,get_input):
@@ -8,6 +11,9 @@ class UI:
         self.top = 720 / 2 + 50
         self.monster = monster
         self.get_input = get_input
+        self.message = ""
+        self.message_timer = Timer(2000, func=self.clear_message)
+        self.audio = audio_import("audio")
 
         self.general_options = ["attack","switch","rest","quit"]
         self.general_index = {"col" : 0, "row": 0}
@@ -18,6 +24,10 @@ class UI:
         self.player_monsters = player_monsters
         self.available_monsters = [monster for monster in self.player_monsters if monster != self.monster and monster.health > 0]
         self.switch_index = 0
+
+
+    def clear_message(self):
+        self.message = ""
     
     def input(self):
         keys = pygame.key.get_just_pressed()
@@ -25,17 +35,20 @@ class UI:
             self.general_index["row"] = (self.general_index["row"] + int(keys[pygame.K_DOWN]) - int(keys[pygame.K_UP])) % self.rows
             self.general_index["col"] = (self.general_index["col"] + int(keys[pygame.K_RIGHT]) - int(keys[pygame.K_LEFT])) % self.cols
             if keys[pygame.K_SPACE] or keys[pygame.K_RETURN]:
+                self.audio["switch"].play()
                 self.state = self.general_options[self.general_index["col"] + self.general_index["row"] * 2]
         
         elif self.state == "attack":
             self.attack_index["row"] = (self.attack_index["row"] + int(keys[pygame.K_DOWN]) - int(keys[pygame.K_UP])) % self.rows
             self.attack_index["col"] = (self.attack_index["col"] + int(keys[pygame.K_RIGHT]) - int(keys[pygame.K_LEFT])) % self.cols
             if keys[pygame.K_SPACE] or keys[pygame.K_RETURN]:
+                self.audio["switch"].play()
                 attack = (self.monster.abilities[self.attack_index["col"] + self.attack_index["row"] * 2])
                 self.get_input(self.state,attack)
                 self.state = "general"
             if keys[pygame.K_BACKSPACE] or keys[pygame.K_ESCAPE]:
                 self.state = "general"
+                self.audio["switch"].play()
                 self.switch_index = 0
                 self.general_index = {"col" : 0, "row": 0}
                 self.attack_index = {"col" : 0, "row": 0}
@@ -48,10 +61,12 @@ class UI:
                 self.switch_index = (self.switch_index + int(keys[pygame.K_DOWN]) - int(keys[pygame.K_UP])) % len(self.available_monsters)
                 if keys[pygame.K_BACKSPACE] or keys[pygame.K_ESCAPE]:
                     self.state = "general"
+                    self.audio["switch"].play()
                     self.switch_index = 0
                     self.general_index = {"col" : 0, "row": 0}
                     self.attack_index = {"col" : 0, "row": 0}
                 if keys[pygame.K_SPACE] or keys[pygame.K_RETURN]:
+                    self.audio["switch"].play()
                     self.get_input(self.state,self.available_monsters[self.switch_index])
                     self.state = "general"
             
@@ -110,6 +125,11 @@ class UI:
         pygame.draw.rect(self.display_surface,colors["grey"],health_rect)
         self.bar(health_rect,self.monster.health,self.monster.maxhealth)
 
+        health_text = f"{int(self.monster.health)}/{int(self.monster.maxhealth)}"
+        health_surf = self.font.render(health_text, True, colors["black"])
+        health_rect_text = health_surf.get_frect(center=health_rect.center)
+        self.display_surface.blit(health_surf, health_rect_text)
+
     def bar(self,rect,value,max_value):
         ratio = rect.width / max_value
         p_rect = pygame.FRect(rect.topleft, (value * ratio,rect.height))
@@ -119,7 +139,8 @@ class UI:
     def update(self):
         self.input()
         self.available_monsters = [monster for monster in self.player_monsters if monster != self.monster and monster.health > 0]
-
+        self.message_timer.update()
+        
     def draw(self):
         match self.state:
             case "general":
@@ -131,6 +152,15 @@ class UI:
 
         if self.state != "switch":
             self.stats()
+
+        if self.message:
+            message_rect = pygame.FRect(340, 310, 600, 50)
+            pygame.draw.rect(self.display_surface, colors["white"], message_rect, 0, 4)
+            pygame.draw.rect(self.display_surface, colors["black"], message_rect, 2, 4)
+            text_surf = self.font.render(self.message, True, colors["black"])
+            text_rect = text_surf.get_frect(center=message_rect.center)
+            self.display_surface.blit(text_surf, text_rect)
+
 
 
 class EnemyUI:
@@ -153,3 +183,8 @@ class EnemyUI:
         p_rect = pygame.FRect(health_rect.topleft,(self.monster.health * ratio,health_rect.height))
         pygame.draw.rect(self.display_surface,colors["grey"],health_rect)
         pygame.draw.rect(self.display_surface,colors["red"],p_rect)
+
+        health_text = f"{int(self.monster.health)}/{int(self.monster.maxhealth)}"
+        health_surf = self.font.render(health_text, True, colors["black"])
+        health_rect_text = health_surf.get_frect(center=health_rect.center)
+        self.display_surface.blit(health_surf, health_rect_text)
