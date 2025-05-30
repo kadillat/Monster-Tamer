@@ -30,7 +30,7 @@ Backspace/ESC	         Cancel / go back
 
 ## **About Project and Developer**
 
-This project is a personal demo and learning project for my course BME268.
+This project is a personal demo and learning project for my course BME268.<br>
 Contact: furkan412002@gmail.com
 
  
