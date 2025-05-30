@@ -29,7 +29,7 @@ Backspace/ESC	               Cancel / go back
 2. Open Monster Tamer.exe
 
 
-## **Plans for the full verrsion**
+## **Plans for the full version**
 <li>Monster stat screens and details</li>
 <li>Tournament system with different opponents that get stronger each tour</li>
 <li>More monsters,abilities,effects </li>
