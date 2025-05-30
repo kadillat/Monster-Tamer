@@ -9,7 +9,7 @@ os.chdir(script_dir)
 from settings import *
 from support import *
 from menus import *
-from timer import Timer
+from timer import *
 from monster import *
 from animation import *
 

@@ -7,6 +7,7 @@ sys.path.insert(0, script_dir)
 os.chdir(script_dir)
 
 from settings import *
+from os.path import join 
 
 
 def tile_importer(cols,*path):
