@@ -1,10 +1,17 @@
+
+import sys
+import os
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, script_dir)
+os.chdir(script_dir)
+
 from settings import *
 from support import *
 from menus import *
-from timer import *
+from timer import Timer
 from monster import *
 from animation import *
-from moviepy.editor import VideoFileClip 
 
 
 class Game:
@@ -15,12 +22,11 @@ class Game:
         self.run = True
         self.clock = pygame.time.Clock()
         self.sprites = pygame.sprite.Group()
-        self.state = "selection"
+        self.state = "opening"
         self.selected_monsters = []
         self.selected_enemies = []
-
+        self.intro_music_started = False
         self.import_assets()
-        self.audio["music"].play(-1)
         self.player_active = True
         self.enemy_counter = 0
         self.selection_index = 0
@@ -185,6 +191,29 @@ class Game:
         self.attack_frames = tile_importer(4,"attacks")
         self.audio = audio_import("audio")
 
+    def handle_opening_input(self):
+        keys = pygame.key.get_just_pressed()
+        if any(keys):
+            self.audio["switch"].play()
+            self.state = "selection"
+
+    def draw_opening_screen(self, dt):
+        if not self.intro_music_started:
+            self.audio["intro"].play()
+            self.intro_music_started = True
+        self.display_surface.blit(self.backgrounds["intro"], (0, 0))
+
+    def handle_opening_input(self):
+        keys = pygame.key.get_just_pressed()
+        if keys[pygame.K_SPACE] or keys[pygame.K_RETURN]:
+            self.audio["intro"].stop()
+            self.audio["switch"].play()
+            self.audio["music"].play(-1)
+            self.state = "selection"
+
+
+
+
     def draw_floor(self):
         for sprite in self.sprites:
             if hasattr(sprite, "name"):
@@ -238,7 +267,11 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.run = False
 
-            if self.state == "selection":
+            if self.state == "opening":
+                self.handle_opening_input()
+                self.draw_opening_screen(dt)
+
+            elif self.state == "selection":
                 self.handle_selection_input()
                 self.draw_selection_screen()
 
@@ -258,12 +291,7 @@ class Game:
 
         self.run = False
 
-def play_intro(video_path): 
-    clip = VideoFileClip(video_path) 
-    pygame.display.set_caption("Monster Tamer")
-    clip.preview()
 
 if __name__ == "__main__":
-    play_intro("intro/intro.mp4")
     game = Game()
     game.start()

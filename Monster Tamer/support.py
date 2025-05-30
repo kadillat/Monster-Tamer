@@ -1,6 +1,4 @@
 from settings import *
-from os.path import join
-from os import walk
 
 
 def tile_importer(cols,*path):

@@ -1,7 +1,5 @@
 import pygame
-import random
-from timer import *
-from os.path import join
+from os.path import join 
 from os import walk
 
 
@@ -139,22 +137,22 @@ monster_data = {
 
 
 ability_data = {
-    "Scratch": {"damage": random.randint(8,16), "element":"normal", "animation": "scratch"},
-    "Slash": {"damage": random.randint(10,25), "element":"normal", "animation": "slash"},
-    "Ember": {"damage": random.randint(8,16), "element":"fire", "animation": "fire"},
-    'Splash':  {'damage': random.randint(8,16),  'element': 'water',  'animation': 'splash'},
-    'Explosion': {'damage': random.randint(10,25),  'element': 'fire', 'animation': 'explosion'},
-    "Ice shard": {"damage": random.randint(13,30), "element":"water", "animation": "ice"},
-    "Darkness": {"damage": random.randint(10,25), "element":"dark", "animation": "dark"},
-    "Earthquake": {"damage": random.randint(13,30), "element":"earth", "animation": "earth"},
-    "Tackle": {"damage": random.randint(8,16), "element":"normal", "animation": "scratch"},
-    "Flame burst": {"damage": random.randint(13,30), "element":"fire", "animation": "fire"},
-    "Tidal wave": {"damage": random.randint(10,25), "element":"water", "animation": "splash"},
-    "Shock bolt": {"damage": random.randint(10,25), "element":"electric", "animation": "shock"},
-    "Radiance": {"damage": random.randint(13,30), "element":"light", "animation": "light"},
-    "Throw rock": {"damage": random.randint(10,25), "element":"earth", "animation": "earth"},
-    "Tornado": {"damage": random.randint(10,25), "element":"wind", "animation": "wind"},
-    "Dark Thunder": {"damage": random.randint(13,30), "element":"dark", "animation": "darkthunder"}
+    "Scratch": {"damage": 10, "element":"normal", "animation": "scratch"},
+    "Slash": {"damage": 1, "element":"normal", "animation": "slash"},
+    "Ember": {"damage": 1, "element":"fire", "animation": "fire"},
+    'Splash':  {'damage': 1,  'element': 'water',  'animation': 'splash'},
+    'Explosion': {'damage': 1,  'element': 'fire', 'animation': 'explosion'},
+    "Ice shard": {"damage": 1, "element":"water", "animation": "ice"},
+    "Darkness": {"damage": 1, "element":"dark", "animation": "dark"},
+    "Earthquake": {"damage": 1, "element":"earth", "animation": "earth"},
+    "Tackle": {"damage": 1 , "element":"normal", "animation": "scratch"},
+    "Flame burst": {"damage": 1, "element":"fire", "animation": "fire"},
+    "Tidal wave": {"damage": 1, "element":"water", "animation": "splash"},
+    "Shock bolt": {"damage": 1, "element":"electric", "animation": "shock"},
+    "Radiance": {"damage": 1, "element":"light", "animation": "light"},
+    "Throw rock": {"damage": 1, "element":"earth", "animation": "earth"},
+    "Tornado": {"damage": 1, "element":"wind", "animation": "wind"},
+    "Dark Thunder": {"damage": 1, "element":"dark", "animation": "darkthunder"}
 
 
 }

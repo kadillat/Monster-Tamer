@@ -1,6 +1,6 @@
 from settings import *
-from timer import *
 from support import *
+from timer import Timer
 
 
 class UI:
