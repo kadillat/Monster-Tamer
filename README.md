@@ -25,9 +25,11 @@ Enter/Space	          Confirm selection / attack <br>
 Backspace/ESC	               Cancel / go back
 </pre>
 ## **Installation**
-1. Extract files as a folder
-2. Open Monster Tamer.exe
-
+1. Extract ZIP
+2. Open Monster-Tamer-main folder
+3. Open Monster Tamer folder
+4. Open main.py with Python
+   (if that does not work, try to open with visual studio code (trust author) and open from there)
 
 ## **Plans for the full version**
 <li>Monster stat screens and details</li>
