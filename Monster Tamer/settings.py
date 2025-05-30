@@ -18,54 +18,143 @@ colors = {
 }
 
 
-monster_data = {
+
     # Player monsters
-    "Batty":  {"element": "normal", "health": 70},
-    "Flare":  {"element": "fire", "health": 60},
-    "Groudon":  {"element": "normal", "health": 110},
-    "Hornet":  {"element": "normal", "health": 70},
-    "Hydro":  {"element": "water", "health": 90},
-    "Jelly":  {"element": "water", "health": 65},
-    "Kamai":  {"element": "normal", "health": 100},
-    "Lorri":  {"element": "normal", "health": 65},
-    "Pla":  {"element": "dark", "health": 60},
-    "Slyph":  {"element": "earth", "health": 80},
-    "Windy":  {"element": "wind", "health": 60},
-    "Pav":  {"element": "dark", "health": 60},
-    # Enemy monsters
-    "Behemoth":  {"element": "normal", "health": 130},
-    "Cerberus":  {"element": "normal", "health": 120},
-    "Crow":  {"element": "normal", "health": 70},
-    "Garuda":  {"element": "fire", "health": 120},
-    "Ghost":  {"element": "dark", "health": 100},
-    "Helm":  {"element": "normal", "health": 120},
-    "Keltos":  {"element": "water", "health": 150},
-    "Kraken":  {"element": "water", "health": 90},
-    "Reaper":  {"element": "dark", "health": 100},
-    "Wolvem":  {"element": "normal", "health": 85}
-    
+monster_data = {
+    "Batty": {
+        "element": "normal",
+        "health": 70,
+        "abilities": ["Scratch", "Slash", "Tornado", "Darkness"]
+    },
+    "Flare": {
+        "element": "fire",
+        "health": 60,
+        "abilities": ["Ember", "Flame burst", "Scratch", "Radiance"]
+    },
+    "Groudon": {
+        "element": "earth",
+        "health": 140,
+        "abilities": ["Earthquake", "Throw rock", "Tackle", "Slash"]
+    },
+    "Hornet": {
+        "element": "normal",
+        "health": 70,
+        "abilities": ["Darkness", "Slash", "Tornado", "Tackle"]
+    },
+    "Hydro": {
+        "element": "water",
+        "health": 90,
+        "abilities": ["Splash", "Tidal wave", "Tackle", "Shock bolt"]
+    },
+    "Jelly": {
+        "element": "water",
+        "health": 65,
+        "abilities": ["Splash", "Ice shard", "Scratch", "Radiance"]
+    },
+    "Kamai": {
+        "element": "normal",
+        "health": 100,
+        "abilities": ["Slash", "Scratch", "Throw rock", "Ember"]
+    },
+    "Lorri": {
+        "element": "dark",
+        "health": 65,
+        "abilities": ["Tackle", "Darkness", "Tornado", "Slash"]
+    },
+    "Pla": {
+        "element": "dark",
+        "health": 50,
+        "abilities": ["Dark Thunder", "Radiance", "Flame burst", "Scratch"]
+    },
+    "Slyph": {
+        "element": "earth",
+        "health": 80,
+        "abilities": ["Throw rock", "Earthquake", "Splash", "Tackle"]
+    },
+    "Windy": {
+        "element": "wind",
+        "health": 60,
+        "abilities": ["Tornado", "Slash", "Shock bolt", "Tackle"]
+    },
+    "Pav": {
+        "element": "dark",
+        "health": 60,
+        "abilities": ["Shock bolt", "Tackle", "Darkness", "Scratch"]
+    },
+
+    "Behemoth": {
+        "element": "earth",
+        "health": 160,
+        "abilities": ["Earthquake", "Throw rock", "Slash", "Tackle"]
+    },
+    "Cerberus": {
+        "element": "fire",
+        "health": 150,
+        "abilities": ["Ember", "Flame burst", "Scratch", "Darkness"]
+    },
+    "Crow": {
+        "element": "dark",
+        "health": 100,
+        "abilities": ["Darkness", "Slash", "Tornado", "Tackle"]
+    },
+    "Garuda": {
+        "element": "wind",
+        "health": 180,
+        "abilities": ["Tornado", "Slash", "Flame burst", "Radiance"]
+    },
+    "Ghost": {
+        "element": "dark",
+        "health": 150,
+        "abilities": ["Dark Thunder", "Darkness", "Slash", "Shock bolt"]
+    },
+    "Helm": {
+        "element": "normal",
+        "health": 150,
+        "abilities": ["Tackle", "Scratch", "Throw rock", "Slash"]
+    },
+    "Keltos": {
+        "element": "water",
+        "health": 200,
+        "abilities": ["Splash", "Tidal wave", "Tackle", "Scratch"]
+    },
+    "Kraken": {
+        "element": "water",
+        "health": 120,
+        "abilities": ["Splash", "Ice shard", "Darkness", "Tackle"]
+    },
+    "Reaper": {
+        "element": "dark",
+        "health": 160,
+        "abilities": ["Dark Thunder", "Tornado", "Slash", "Radiance"]
+    },
+    "Wolvem": {
+        "element": "normal",
+        "health": 115,
+        "abilities": ["Slash", "Tackle", "Darkness", "Flame burst"]
+    }
 }
 
 
 
 
+
 ability_data = {
-    "Scratch": {"damage": random.randint(7,19), "element":"normal", "animation": "scratch"},
+    "Scratch": {"damage": random.randint(8,16), "element":"normal", "animation": "scratch"},
     "Slash": {"damage": random.randint(10,25), "element":"normal", "animation": "slash"},
-    "Ember": {"damage": random.randint(7,19), "element":"fire", "animation": "fire"},
-    'Splash':  {'damage': random.randint(7,19),  'element': 'water',  'animation': 'splash'},
+    "Ember": {"damage": random.randint(8,16), "element":"fire", "animation": "fire"},
+    'Splash':  {'damage': random.randint(8,16),  'element': 'water',  'animation': 'splash'},
     'Explosion': {'damage': random.randint(10,25),  'element': 'fire', 'animation': 'explosion'},
-    "Ice shard": {"damage": random.randint(10,25), "element":"water", "animation": "ice"},
-    "Darkness": {"damage": random.randint(11,29), "element":"dark", "animation": "dark"},
-    "Earthquake": {"damage": random.randint(11,29), "element":"earth", "animation": "earth"},
-    "Tackle": {"damage": random.randint(5,15), "element":"normal", "animation": "scratch"},
-    "Flame burst": {"damage": random.randint(12,26), "element":"fire", "animation": "fire"},
-    "Tidal wave": {"damage": random.randint(14,28), "element":"water", "animation": "splash"},
-    "Shock bolt": {"damage": random.randint(10,24), "element":"electric", "animation": "shock"},
-    "Radiance": {"damage": random.randint(8,20), "element":"light", "animation": "light"},
-    "Throw rock": {"damage": random.randint(10,22), "element":"earth", "animation": "earth"},
-    "Tornado": {"damage": random.randint(9,19), "element":"wind", "animation": "wind"},
-    "Dark Thunder": {"damage": random.randint(8,18), "element":"dark", "animation": "darkthunder"}
+    "Ice shard": {"damage": random.randint(13,30), "element":"water", "animation": "ice"},
+    "Darkness": {"damage": random.randint(10,25), "element":"dark", "animation": "dark"},
+    "Earthquake": {"damage": random.randint(13,30), "element":"earth", "animation": "earth"},
+    "Tackle": {"damage": random.randint(8,16), "element":"normal", "animation": "scratch"},
+    "Flame burst": {"damage": random.randint(13,30), "element":"fire", "animation": "fire"},
+    "Tidal wave": {"damage": random.randint(10,25), "element":"water", "animation": "splash"},
+    "Shock bolt": {"damage": random.randint(10,25), "element":"electric", "animation": "shock"},
+    "Radiance": {"damage": random.randint(13,30), "element":"light", "animation": "light"},
+    "Throw rock": {"damage": random.randint(10,25), "element":"earth", "animation": "earth"},
+    "Tornado": {"damage": random.randint(10,25), "element":"wind", "animation": "wind"},
+    "Dark Thunder": {"damage": random.randint(13,30), "element":"dark", "animation": "darkthunder"}
 
 
 }
@@ -79,6 +168,6 @@ element_data = {
     "wind": {"water": 1.25, "normal": 1, "dark": 1.5, "fire": 1, "wind": 0.5, "earth": 0.5},
     "earth": {"water": 0.5, "normal": 1.25, "dark": 1, "fire": 1.25, "wind": 1.5, "earth": 0.75},
     "light": {"dark": 1.5, "normal": 1, "fire": 1, "light": 0.5, "earth": 1, "wind": 1, "water": 1},
-    "electric": {"water": 1.5, "earth": 0.5, "normal": 1, "fire": 1, "wind": 1, "dark": 1}
+    "electric": {"water": 1.5, "earth": 0.5, "normal": 1, "fire": 1, "wind": 1, "dark": 1, "light": 1,}
 
 }

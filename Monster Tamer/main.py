@@ -16,7 +16,8 @@ class Game:
         self.clock = pygame.time.Clock()
         self.sprites = pygame.sprite.Group()
         self.state = "selection"
-        self.selected_monsters = [] 
+        self.selected_monsters = []
+        self.selected_enemies = []
 
         self.import_assets()
         self.audio["music"].play(-1)
@@ -30,19 +31,22 @@ class Game:
         enemy_monsterlist = ["Behemoth","Cerberus","Crow","Garuda","Ghost","Helm","Keltos","Kraken","Reaper","Wolvem"]
         self.player_monsters = [Monster(name, self.player_monsterimages[name], self.sprites) for name in player_monsterlist]
         self.enemy_monsters = [Enemy(name,self.enemy_monsterimages[name],self.sprites) for name in enemy_monsterlist]
+        for i in range(3):
+            enemy_number = int(random.randint(0, len(enemy_monsterlist)-1))
+            enemy = Enemy(enemy_monsterlist[enemy_number], self.enemy_monsterimages[enemy_monsterlist[enemy_number]], self.sprites)
+            enemy_monsterlist.remove(enemy_monsterlist[enemy_number])
+            self.selected_enemies.append(enemy)
         self.player_number = int(random.randint(0,9))
         self.player_name = player_monsterlist[self.player_number]
         # self.player = self.player_monsters[self.player_number]
         self.player_sprite = self.player_monsters[self.player_number]
-        self.enemy_number = int(random.randint(0,9))
-        self.enemy_sprite = self.enemy_monsters[self.enemy_number]
-        self.enemy_name = enemy_monsterlist[self.enemy_number] 
-        self.enemy = self.enemy_monsters[self.enemy_number]
+        self.current_enemy_index = 0
+        self.enemy = self.selected_enemies[self.current_enemy_index]
         # self.sprites.add(self.player)
         self.sprites.add(self.enemy)
 
 
-        self.enemy_ui = EnemyUI(self.enemy)
+        self.enemy_ui = EnemyUI(self.enemy, self.selected_enemies)
 
         self.timers = {
             "player end": Timer(1000, func = self.enemy_turn),
@@ -59,8 +63,8 @@ class Game:
 
         spacing_x = 200
         spacing_y = 100
-        start_x = (1280 - (spacing_x * 4)) // 2  # 240
-        start_y = (720 - (spacing_y * 3)) // 2   # 210
+        start_x = (1280 - (spacing_x * 4)) // 2
+        start_y = (720 - (spacing_y * 3)) // 2 
 
         for i, monster in enumerate(self.player_monsters):
             col = i % 4
@@ -104,13 +108,21 @@ class Game:
             self.sprites.add(self.player)
             self.ui.monster = self.player
 
+        elif state == "quit":
+            self.run = False
+
         self.player_active = False
         self.timers["player end"].activate()
 
 
     def apply_attack(self,target,attack):
         attack_data = ability_data[attack]
-        base_damage = attack_data["damage"]
+        if attack_data == "Scratch" or "Ember" or "Splash" or "Tackle":
+            base_damage = random.randint(8,16)
+        if attack_data == "Slash" or "Explosion" or "Darkness" or "Tidal wave" or "Shock bolt" or "Throw rock" or "Tornado":
+            base_damage = random.randint(10,25)
+        if attack_data == "Ice shard" or "Earthquake" or "Flame burst" or "Radiance" or "Dark Thunder":
+            base_damage = random.randint(13,30)
         target_element = target.element
         attack_element = attack_data["element"]
         attack_multiply = element_data[attack_element][target_element]
@@ -126,28 +138,27 @@ class Game:
             actor_name = self.player.name
         else:
             actor_name = self.enemy.name
-        attack_text = f"{actor_name} {attack} kullandı, {int(damage)} hasar verdi!"
+        attack_text = f"{actor_name} used {attack}, dealt {int(damage)} damage!"
         self.ui.message = attack_text
         self.ui.message_timer.activate()
 
 
     def enemy_turn(self):
+
         if self.enemy.health <= 0:
             self.player_active = True
             self.enemy.kill()
-            self.enemy_number = int(random.randint(0,9))
-            self.enemy = self.enemy_monsters[self.enemy_number]
-            self.enemy_ui.monster = self.enemy
-            self.sprites.add(self.enemy)
-            self.enemy_counter += 1
-            if self.enemy_counter == 3:
-                pygame.quit()
-
-
-
+            self.current_enemy_index += 1
+            
+            if self.current_enemy_index < len(self.selected_enemies):
+                self.enemy = self.selected_enemies[self.current_enemy_index]
+                self.enemy_ui.monster = self.enemy
+                self.sprites.add(self.enemy)
+            else:
+                self.run = False
         else:
             attack = random.choice(self.enemy.abilities)
-            self.apply_attack(self.player,attack)
+            self.apply_attack(self.player, attack)
             self.timers["enemy end"].activate()
 
     def player_turn(self):
@@ -200,7 +211,7 @@ class Game:
             self.selection_index = (self.selection_index - row_size) % monster_count
 
         if keys[pygame.K_RETURN] or keys[pygame.K_SPACE]:
-            self.audio["switch"].play()
+            self.audio["choose"].play()
             monster = self.player_monsters[self.selection_index]
             if monster not in self.selected_monsters:
                 self.selected_monsters.append(monster)
@@ -245,7 +256,7 @@ class Game:
 
             pygame.display.update()
 
-        pygame.quit()
+        self.run = False
 
 def play_intro(video_path): 
     clip = VideoFileClip(video_path) 

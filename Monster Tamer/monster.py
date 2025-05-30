@@ -5,8 +5,12 @@ class Creature:
     def get_data(self,name):
         self.element = monster_data[name]["element"]
         self._health = self.maxhealth = monster_data[name]["health"]
-        self.abilities = random.sample(list(ability_data.keys()),4)
         self.name = name
+
+        if "abilities" in monster_data[name]:
+            self.abilities = monster_data[name]["abilities"]
+        else:
+            self.abilities = random.sample(list(ability_data.keys()), 4)
 
     @property
     def health(self):

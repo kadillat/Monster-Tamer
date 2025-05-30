@@ -54,7 +54,7 @@ class UI:
                 self.attack_index = {"col" : 0, "row": 0}
 
         elif self.state == "quit":
-            pygame.quit()
+            self.get_input("quit")
 
         elif self.state == "switch":
             if self.available_monsters:
@@ -69,6 +69,12 @@ class UI:
                     self.audio["switch"].play()
                     self.get_input(self.state,self.available_monsters[self.switch_index])
                     self.state = "general"
+            if not self.available_monsters:
+                self.state = "general"
+                self.general_index = {"col": 0, "row": 0}
+                self.attack_index = {"col": 0, "row": 0}
+                self.switch_index = 0
+                return
             
         elif self.state == "rest":
             self.get_input("rest")
@@ -135,6 +141,24 @@ class UI:
         p_rect = pygame.FRect(rect.topleft, (value * ratio,rect.height))
         pygame.draw.rect(self.display_surface, colors["red"],p_rect)
 
+    def draw_player_monster_lives(self):
+        x = 20
+        y = 580
+        size = 14
+        spacing = 6
+
+        for i in range(6):
+            if i < len(self.player_monsters):
+                monster = self.player_monsters[i]
+                color = colors["green"] if monster.health > 0 else colors["grey"]
+            else:
+                color = colors["black"]
+
+            rect = pygame.Rect(x, y + i * (size + spacing), size, size)
+            pygame.draw.rect(self.display_surface, color, rect)
+            pygame.draw.rect(self.display_surface, colors["black"], rect, 2)
+
+
 
     def update(self):
         self.input()
@@ -160,14 +184,37 @@ class UI:
             text_surf = self.font.render(self.message, True, colors["black"])
             text_rect = text_surf.get_frect(center=message_rect.center)
             self.display_surface.blit(text_surf, text_rect)
+            
+        self.draw_player_monster_lives()
+
+
 
 
 
 class EnemyUI:
-    def __init__(self, monster):
+    def __init__(self, monster, selected_enemies=None):
         self.display_surface = pygame.display.get_surface()
         self.monster = monster
         self.font = pygame.font.Font(None,30)
+        self.selected_enemies = selected_enemies or []
+
+    def draw_enemy_monster_lives(self):
+        x = 1240
+        y = 30
+        size = 14
+        spacing = 6
+
+        for i in range(3):
+            if i < len(self.selected_enemies):
+                monster = self.selected_enemies[i]
+                color = colors["green"] if monster.health > 0 else colors["grey"]
+            else:
+                color = colors["black"]
+
+            rect = pygame.Rect(x, y + i * (size + spacing), size, size)
+            pygame.draw.rect(self.display_surface, color, rect)
+            pygame.draw.rect(self.display_surface, colors["black"], rect, 2)
+
         
     def draw(self):
         rect = pygame.FRect((0,0), (250,80)).move_to(midleft = (450, self.monster.rect.centery))
@@ -188,3 +235,4 @@ class EnemyUI:
         health_surf = self.font.render(health_text, True, colors["black"])
         health_rect_text = health_surf.get_frect(center=health_rect.center)
         self.display_surface.blit(health_surf, health_rect_text)
+        self.draw_enemy_monster_lives()
