@@ -11,6 +11,11 @@ Monster Tamer is a turn based battle demo game built with Python and Pygame main
 <li>Visual & Audio Effects</li>
 
 ## **Screenshots**
+![Screenshot](image.png)
+<br>
+<br>
+<br>
+![Screenshot](image2.png)
 
 ## **Controls**
 <pre>
@@ -20,6 +25,8 @@ Enter/Space	          Confirm selection / attack <br>
 Backspace/ESC	               Cancel / go back
 </pre>
 ## **Installation**
+1. Extract files as a folder
+2. Open Monster Tamer.exe
 
 
 ## **Plans for the full verrsion**
